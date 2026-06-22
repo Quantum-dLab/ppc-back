@@ -1,0 +1,12 @@
+model User {
+    id           BigInt    @id @default(autoincrement())
+    uid          String    @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    email        String    @unique
+    passwordHash String
+    isActive     Boolean   @default(true)
+    lastLoginAt  DateTime?
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
+
+    profiles Profile[]
+}

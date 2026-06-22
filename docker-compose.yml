@@ -8,9 +8,11 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: ppc_db
     ports:
-      - "5433:5433"
+      - "5433:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    networks:
+      - ppc-network
 
   api:
     build:
@@ -19,13 +21,34 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/ppc
+      DATABASE_URL: postgres://postgres:postgres@db:5432/ppc_db
       NODE_ENV: production
+      PRISMA_CLIENT_OUTPUT: /app/dist/generated/prisma
     ports:
       - "3069:3069"
     volumes:
       - .:/app
     command: ["npm", "run", "start:prod"]
+    networks:
+      - ppc-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ppc-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - ppc-network
 
 volumes:
   db_data:
+
+networks:
+  ppc-network:
+    driver: bridge
