@@ -1,0 +1,9 @@
+model Cart {
+    id        BigInt     @id @default(autoincrement())
+    uid       String     @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    userId    BigInt     @unique
+    user      User       @relation(fields: [userId], references: [id])
+    items     CartItem[]
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+}

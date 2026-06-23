@@ -9,4 +9,6 @@ model User {
     updatedAt    DateTime  @updatedAt
 
     profiles Profile[]
+
+    carts Cart[]
 }

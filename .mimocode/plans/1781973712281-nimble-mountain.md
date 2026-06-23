@@ -131,13 +131,15 @@ model Product {
 }
 
 model Cart {
-  id        String     @id @default(uuid())
-  userId    String     @unique
-  user      User       @relation(fields: [userId], references: [id])
-  items     CartItem[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+    id        BigInt     @id @default(autoincrement())
+    uid       String     @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+    userId    String     @unique 
+    user      User       @relation(fields: [userId], references: [uid])
+    items     CartItem[]
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
 }
+
 
 model CartItem {
   id        String  @id @default(uuid())

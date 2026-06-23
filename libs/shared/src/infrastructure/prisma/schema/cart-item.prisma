@@ -1,0 +1,11 @@
+model CartItem {
+  id        BigInt  @id @default(autoincrement())
+  uid       String  @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  cartId    BigInt
+  cart      Cart    @relation(fields: [cartId], references: [id])
+  productId BigInt
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int     @default(1)
+
+  @@unique([cartId, productId])
+}

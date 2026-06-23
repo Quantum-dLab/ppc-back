@@ -1,0 +1,12 @@
+model Product {
+  id          BigInt     @id @default(autoincrement())
+  uid         String     @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String
+  description String
+  price       Decimal    @db.Decimal(10, 2)
+  stock       Int        @default(0)
+  cartItems   CartItem[]
+  createdAt   DateTime   @default(now())
+  imageUrl    String?
+  updatedAt   DateTime   @updatedAt
+}

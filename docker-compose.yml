@@ -15,6 +15,7 @@ services:
       - ppc-network
 
   api:
+    container_name: ppc-api
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
@@ -26,9 +27,7 @@ services:
       PRISMA_CLIENT_OUTPUT: /app/dist/generated/prisma
     ports:
       - "3069:3069"
-    volumes:
-      - .:/app
-    command: ["npm", "run", "start:prod"]
+
     networks:
       - ppc-network
 
