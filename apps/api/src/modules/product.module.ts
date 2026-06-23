@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from '@libs/shared/infrastructure/prisma/prisma.module';
 
 import {
   CreateProductUseCase,
@@ -19,7 +18,6 @@ const USE_CASES = [
 ];
 
 @Module({
-  imports: [PrismaModule],
   providers: [
     { provide: PRODUCT_REPOSITORY, useClass: PrismaProductRepository },
     ...USE_CASES,

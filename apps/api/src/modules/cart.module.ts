@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { PrismaModule } from '@libs/shared/infrastructure/prisma/prisma.module';
 
 import { CART_REPOSITORY } from '../domain/repositories/cart.repository.interface';
 import { CART_ITEM_REPOSITORY } from '../domain/repositories/cart-item.repository.interface';
@@ -31,7 +30,6 @@ const CART_ITEM_USE_CASES = [
 ];
 
 @Module({
-  imports: [PrismaModule],
   controllers: [CartsController, CartItemsController],
   providers: [
     { provide: CART_REPOSITORY, useClass: PrismaCartRepository },

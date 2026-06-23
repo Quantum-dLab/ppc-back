@@ -7,8 +7,8 @@ import {
   CreateCartItemProps,
   ICartItemRepository,
 } from '../../domain/repositories/cart-item.repository.interface';
-import { PrismaService } from '@libs/shared/infrastructure/prisma/prisma.service';
-import { CartItem } from '@libs/shared/infrastructure/prisma/generated/prisma/client';
+import { PrismaService } from '@libs/database';
+import { CartItem } from '@prisma/client';
 
 @Injectable()
 export class PrismaCartItemRepository implements ICartItemRepository {

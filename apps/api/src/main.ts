@@ -7,6 +7,7 @@ import { ApiResponseInterceptor } from './common/interceptors/api-response.inter
 import { AllExceptionFilter } from './common/filters/exception.filter';
 import { SetupSwagger } from './configs/swagger.config';
 import { ApiModule } from './modules/api.module';
+import { NestLoggerAdapter } from 'libs/logger/src/nest.logger.adapter';
 async function bootstrap() {
   const app = await NestFactory.create<NestApplication>(ApiModule);
   app.use(json());
@@ -34,10 +35,13 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new AllExceptionFilter());
-
+  if(process.env.USE_APP_LOGGER_FOR_NEST==='true'){
+    app.useLogger(new NestLoggerAdapter());
+  }
   SetupSwagger(app);
   const port = process.env.PORT || 3000;
   await app.listen(port);
   Logger.log(`Application is listening on port ${port}`);
+  Logger.log(`Swagger docs : http://localhost:${port}/docs`);
 }
 bootstrap();

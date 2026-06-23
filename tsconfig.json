@@ -24,12 +24,32 @@
     "baseUrl": ".",
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@libs/logger": ["libs/w/src", "libs/w/src"],
-      "@libs/logger/*": ["libs/w/src/*", "libs/w/src/*"],
-      "@libs/logger/logger": ["libs/w/src"],
-      "@libs/logger/logger/*": ["libs/w/src/*"],
-      "@libs/shared": ["libs/shared/src"],
-      "@libs/shared/*": ["libs/shared/src/*"]
+      "@libs/database": [
+        "libs/database/src"
+      ],
+      "@libs/database/*": [
+        "libs/database/src/*"
+      ],
+      "@libs/logger": [
+        "libs/w/src",
+        "libs/w/src"
+      ],
+      "@libs/logger/*": [
+        "libs/w/src/*",
+        "libs/w/src/*"
+      ],
+      "@libs/logger/logger": [
+        "libs/w/src"
+      ],
+      "@libs/logger/logger/*": [
+        "libs/w/src/*"
+      ],
+      "@libs/shared": [
+        "libs/shared/src"
+      ],
+      "@libs/shared/*": [
+        "libs/shared/src/*"
+      ]
     }
   }
 }

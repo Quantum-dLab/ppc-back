@@ -1,52 +1,64 @@
-services:
-  db:
-    image: postgres:16-alpine
-    container_name: ppc-db
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: ppc_db
-    ports:
-      - "5433:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    networks:
-      - ppc-network
+version: "3.8"
 
+services:
   api:
     container_name: ppc-api
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
     depends_on:
-      - db
-    environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/ppc_db
-      NODE_ENV: production
-      PRISMA_CLIENT_OUTPUT: /app/dist/generated/prisma
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
-      - "3069:3069"
-
+      - "${PORT:-6969}:3001"
     networks:
       - ppc-network
 
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: ppc-pgadmin
-    restart: always
+  postgres:
+    image: postgres:16-alpine
+    container_name: ppc-postgres
+    restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      POSTGRES_USER: ${DATABASE_USER:-postgres}
+      POSTGRES_PASSWORD: ${DATABASE_PASS:-1111}
+      POSTGRES_DB: ${DATABASE_NAME:-ppc_db}
     ports:
-      - "5050:80"
-    depends_on:
-      - db
+      - "${DATABASE_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ppc-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: ppc-redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASS:-8080} --appendonly yes
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a $$REDIS_PASS ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - ppc-network
 
 volumes:
-  db_data:
+  postgres_data:
+  redis_data:
 
 networks:
   ppc-network:

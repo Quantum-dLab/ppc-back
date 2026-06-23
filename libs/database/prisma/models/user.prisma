@@ -11,4 +11,6 @@ model User {
     profiles Profile[]
 
     carts Cart[]
+    @@map("user")
+    @@schema("user")
 }
