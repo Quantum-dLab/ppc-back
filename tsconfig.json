@@ -9,7 +9,7 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "strictPropertyInitialization":false,
+    "strictPropertyInitialization": false,
     "allowSyntheticDefaultImports": true,
     "target": "ES2023",
     "sourceMap": true,
@@ -24,12 +24,12 @@
     "baseUrl": ".",
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@libs/shared": [
-        "libs/shared/src"
-      ],
-      "@libs/shared/*": [
-        "libs/shared/src/*"
-      ]
+      "@libs/logger": ["libs/w/src", "libs/w/src"],
+      "@libs/logger/*": ["libs/w/src/*", "libs/w/src/*"],
+      "@libs/logger/logger": ["libs/w/src"],
+      "@libs/logger/logger/*": ["libs/w/src/*"],
+      "@libs/shared": ["libs/shared/src"],
+      "@libs/shared/*": ["libs/shared/src/*"]
     }
   }
 }
