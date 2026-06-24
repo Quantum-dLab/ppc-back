@@ -23,33 +23,14 @@
     "strictBindCallApply": false,
     "baseUrl": ".",
     "noFallthroughCasesInSwitch": false,
+    "ignoreDeprecations": "6.0",
     "paths": {
-      "@libs/database": [
-        "libs/database/src"
-      ],
-      "@libs/database/*": [
-        "libs/database/src/*"
-      ],
-      "@libs/logger": [
-        "libs/w/src",
-        "libs/w/src"
-      ],
-      "@libs/logger/*": [
-        "libs/w/src/*",
-        "libs/w/src/*"
-      ],
-      "@libs/logger/logger": [
-        "libs/w/src"
-      ],
-      "@libs/logger/logger/*": [
-        "libs/w/src/*"
-      ],
-      "@libs/shared": [
-        "libs/shared/src"
-      ],
-      "@libs/shared/*": [
-        "libs/shared/src/*"
-      ]
+      "@libs/database": ["libs/database/src"],
+      "@libs/database/*": ["libs/database/src/*"],
+      "@libs/logger": ["libs/logger/src"],
+      "@libs/logger/*": ["libs/logger/src/*"],
+      "@libs/shared": ["libs/shared/src"],
+      "@libs/shared/*": ["libs/shared/src/*"]
     }
   }
 }
