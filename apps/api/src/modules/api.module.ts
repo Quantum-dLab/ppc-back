@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
-import {  APP_INTERCEPTOR, Reflector } from '@nestjs/core';
+import { APP_INTERCEPTOR, Reflector } from '@nestjs/core';
 
 import { ProductModule } from './product.module';
 import { CartModule } from './cart.module';
+import { OrderModule } from './order/order.module';
+import { PaymentModule } from './payment/payment.module';
 import { LoggerModule } from 'libs/logger/src';
 import { DatabaseModule } from '@libs/database';
 import { ConfigModule } from '@nestjs/config';
@@ -14,14 +16,16 @@ import { ApiResponseInterceptor } from '../common/interceptors/api-response.inte
     ConfigModule.forRoot({
       envFilePath: join(process.cwd(), '.env'),
       expandVariables: true,
-      isGlobal:true
+      isGlobal: true,
     }),
     DatabaseModule,
     LoggerModule.forRootAsync(),
     ProductModule,
     CartModule,
+    OrderModule,
+    PaymentModule,
   ],
-   providers: [
+  providers: [
     {
       provide: APP_INTERCEPTOR,
       useFactory: (reflector: Reflector) =>

@@ -18,7 +18,6 @@ model Payment {
   description       String?
   @@index([orderId])
   @@index([status])
-  @@index([gateway])
   @@map("payment")
   @@schema("payment")
 }
