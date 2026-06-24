@@ -1,0 +1,24 @@
+
+
+model Payment {
+  id                BigInt           @id @default(autoincrement())
+  uid               String           @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId           BigInt           @map("order_id")
+  order             Order            @relation(fields: [orderId], references: [id])
+  amount            Decimal          @db.Decimal(12,2)
+  status Int //1.pending 2.processing 3.success 4.failed 5.cancelled 6.refunded
+  authority         String?          @unique
+  refId             String?          @unique @map("ref_id")
+  gatewayResponse   Json?            @map("gateway_response")
+
+  paidAt            DateTime?        @map("paid_at") @db.Timestamptz(3)
+  failedAt          DateTime?        @map("failed_at") @db.Timestamptz(3)
+  refundedAt        DateTime?        @map("refunded_at") @db.Timestamptz(3)
+
+  description       String?
+  @@index([orderId])
+  @@index([status])
+  @@index([gateway])
+  @@map("payment")
+  @@schema("payment")
+}
