@@ -1,10 +1,10 @@
-import { PaymentEntity } from '../entities/payment.entity';
+import { CreatePaymentInput, PaymentEntity } from '../entities/payment.entity';
 import { PaymentStatus } from '../enums/payment-status.enum';
 
 
 export interface IPaymentRepository {
 
-  create(payment: PaymentEntity): Promise<PaymentEntity>;
+  create(payment: CreatePaymentInput): Promise<PaymentEntity>;
 
 
   findById(id: bigint): Promise<PaymentEntity | null>;
@@ -21,8 +21,6 @@ export interface IPaymentRepository {
 
 
   findByStatus(status: PaymentStatus): Promise<PaymentEntity[]>;
-  update(id: bigint, payment: Partial<PaymentEntity>): Promise<PaymentEntity>;
-
   delete(id: bigint): Promise<void>;
 }
 

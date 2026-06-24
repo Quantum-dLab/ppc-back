@@ -23,7 +23,6 @@
     "strictBindCallApply": false,
     "baseUrl": ".",
     "noFallthroughCasesInSwitch": false,
-    "ignoreDeprecations": "6.0",
     "paths": {
       "@libs/database": ["libs/database/src"],
       "@libs/database/*": ["libs/database/src/*"],

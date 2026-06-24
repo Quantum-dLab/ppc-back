@@ -61,3 +61,8 @@ export class PaymentEntity {
     return this.amount > 0;
   }
 }
+export interface CreatePaymentInput {
+  orderId: bigint;
+  amount: number;
+  description?: string;
+}
