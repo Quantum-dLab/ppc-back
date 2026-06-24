@@ -1,4 +1,12 @@
 import {createHash, randomBytes, timingSafeEqual} from "crypto";
+import * as bcrypt from "bcrypt";
+
+export async function hashPassword(password: string, saltRounds: number = 10): Promise<string> {
+  return bcrypt.hash(password, saltRounds);
+}
+export async function comparePassword(password: string, hash: string): Promise<boolean> {
+  return bcrypt.compare(password, hash);
+}
 
 export function generateRandomHexString(length: number = 24) {
   return randomBytes(length).toString("hex");

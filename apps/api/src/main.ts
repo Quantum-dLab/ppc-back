@@ -3,7 +3,6 @@ import { Logger, VersioningType } from '@nestjs/common';
 import { json, urlencoded } from 'body-parser';
 import rateLimit from 'express-rate-limit';
 import { CustomValidationPipe } from './common/pipes/validation.pipe';
-import { ApiResponseInterceptor } from './common/interceptors/api-response.interceptor';
 import { AllExceptionFilter } from './common/filters/exception.filter';
 import { SetupSwagger } from './configs/swagger.config';
 import { ApiModule } from './modules/api.module';
