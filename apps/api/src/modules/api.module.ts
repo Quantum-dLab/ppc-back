@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import {  APP_INTERCEPTOR, Reflector } from '@nestjs/core';
 
 import { ProductModule } from './product.module';
 import { CartModule } from './cart.module';
@@ -7,6 +8,7 @@ import { LoggerModule } from 'libs/logger/src';
 import { DatabaseModule } from '@libs/database';
 import { ConfigModule } from '@nestjs/config';
 import { join } from 'path';
+import { ApiResponseInterceptor } from '../common/interceptors/api-response.interceptor';
 
 @Module({
   imports: [
@@ -20,6 +22,14 @@ import { join } from 'path';
     AuthModule,
     ProductModule,
     CartModule,
+  ],
+   providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useFactory: (reflector: Reflector) =>
+        new ApiResponseInterceptor(reflector),
+      inject: [Reflector],
+    },
   ],
 })
 export class ApiModule {}
