@@ -1,10 +1,19 @@
+enum Role {
+    USER
+    ADMIN
+
+    @@schema("user")
+}
+
 model User {
     id           BigInt    @id @default(autoincrement())
     uid          String    @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
     email        String    @unique
-    passwordHash String
+    passwordHash String?   @map("password_hash")
+    googleId     String?   @unique @map("google_id")
+    role         Role      @default(USER)
     isActive     Boolean   @default(true)
-    lastLoginAt  DateTime?
+    lastLoginAt  DateTime? @map("last_login_at")
     createdAt    DateTime  @default(now())
     updatedAt    DateTime  @updatedAt
     orders Order[]

@@ -5,6 +5,7 @@ import { ProductModule } from './product.module';
 import { CartModule } from './cart.module';
 import { OrderModule } from './order/order.module';
 import { PaymentModule } from './payment/payment.module';
+import { AuthModule } from './auth.module';
 import { LoggerModule } from 'libs/logger/src';
 import { DatabaseModule } from '@libs/database';
 import { ConfigModule } from '@nestjs/config';
@@ -20,6 +21,7 @@ import { ApiResponseInterceptor } from '../common/interceptors/api-response.inte
     }),
     DatabaseModule,
     LoggerModule.forRootAsync(),
+    AuthModule,
     ProductModule,
     CartModule,
     OrderModule,
