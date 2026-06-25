@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
-import {  APP_INTERCEPTOR, Reflector } from '@nestjs/core';
+import { APP_INTERCEPTOR, Reflector } from '@nestjs/core';
 
 import { ProductModule } from './product.module';
 import { CartModule } from './cart.module';
+import { OrderModule } from './order/order.module';
+import { PaymentModule } from './payment/payment.module';
 import { AuthModule } from './auth.module';
 import { LoggerModule } from 'libs/logger/src';
 import { DatabaseModule } from '@libs/database';
@@ -22,8 +24,10 @@ import { ApiResponseInterceptor } from '../common/interceptors/api-response.inte
     AuthModule,
     ProductModule,
     CartModule,
+    OrderModule,
+    PaymentModule,
   ],
-   providers: [
+  providers: [
     {
       provide: APP_INTERCEPTOR,
       useFactory: (reflector: Reflector) =>
