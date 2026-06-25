@@ -3,7 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ApiModule } from '../modules/api.module';
 export function SetupSwagger(app: NestApplication) {
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('flowEx')
+    .setTitle('PPC')
     .setVersion('1.0')
     .addBearerAuth(
       {
@@ -18,7 +18,7 @@ export function SetupSwagger(app: NestApplication) {
     )
     .build();
   const swaggerDoc = SwaggerModule.createDocument(app, swaggerConfig, {
-    include: [ApiModule],
+    
   });
 
   const tags = new Set<string>();
