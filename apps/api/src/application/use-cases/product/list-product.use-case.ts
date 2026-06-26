@@ -1,3 +1,4 @@
+import { PagingDto, PagingResponseDto } from '@libs/shared';
 import { Inject, Injectable } from '@nestjs/common';
 import { ProductEntity } from 'apps/api/src/domain/entities/product.entity';
 import {
@@ -12,7 +13,7 @@ export class ListProductsUseCase {
     private readonly productRepository: IProductRepository,
   ) {}
 
-  async execute(): Promise<ProductEntity[]> {
-    return this.productRepository.findAll();
+  async execute(dto: PagingDto): Promise<PagingResponseDto<ProductEntity>> {
+    return await this.productRepository.findAll(dto);
   }
 }

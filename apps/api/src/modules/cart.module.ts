@@ -1,11 +1,5 @@
 import { Module } from '@nestjs/common';
 
-import { CART_REPOSITORY } from '../domain/repositories/cart.repository.interface';
-import { CART_ITEM_REPOSITORY } from '../domain/repositories/cart-item.repository.interface';
-import { PrismaCartRepository } from '../infrastructure/repositories/prisma-cart.repository';
-import { PrismaCartItemRepository } from '../infrastructure/repositories/prisma-cart-item.repository';
-import { CartsController } from '../controllers/cart.controller';
-import { CartItemsController } from '../controllers/cart-item.controller';
 import { CreateCartItemUseCase } from '../application/use-cases/cart-item/create-cart-item.use-case';
 import { GetCartItemUseCase } from '../application/use-cases/cart-item/get-cart-item.use-case';
 import { ListCartItemUseCase } from '../application/use-cases/cart-item/list-cart-item.use-case';
@@ -13,14 +7,15 @@ import { UpdateCartItemUseCase } from '../application/use-cases/cart-item/update
 import { CreateCartUseCase } from '../application/use-cases/cart/create-cart.use-case';
 import { GetCartUseCase } from '../application/use-cases/cart/get-cart.use-case';
 import { ListCartsUseCase } from '../application/use-cases/cart/list-cart.use-case';
-import { UpdateCartUseCase } from '../application/use-cases/cart/update-cart.use-case';
+import { CartItemsController } from '../controllers/cart-item.controller';
+import { CartsController } from '../controllers/cart.controller';
+import { CART_ITEM_REPOSITORY } from '../domain/repositories/cart-item.repository.interface';
+import { CART_REPOSITORY } from '../domain/repositories/cart.repository.interface';
+import { PrismaCartItemRepository } from '../infrastructure/repositories/prisma-cart-item.repository';
+import { PrismaCartRepository } from '../infrastructure/repositories/prisma-cart.repository';
+import { ProductModule } from './product.module';
 
-const CART_USE_CASES = [
-  CreateCartUseCase,
-  GetCartUseCase,
-  ListCartsUseCase,
-  UpdateCartUseCase,
-];
+const CART_USE_CASES = [CreateCartUseCase, GetCartUseCase, ListCartsUseCase];
 
 const CART_ITEM_USE_CASES = [
   CreateCartItemUseCase,
@@ -30,6 +25,7 @@ const CART_ITEM_USE_CASES = [
 ];
 
 @Module({
+  imports: [ProductModule],
   controllers: [CartsController, CartItemsController],
   providers: [
     { provide: CART_REPOSITORY, useClass: PrismaCartRepository },

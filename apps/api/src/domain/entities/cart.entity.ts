@@ -1,8 +1,4 @@
-import { Exclude } from 'class-transformer';
-
-export interface UpdateCartProps {
-  userId?: bigint;
-}
+import { Exclude, Expose } from 'class-transformer';
 
 export class CartEntity {
   @Exclude()
@@ -10,15 +6,18 @@ export class CartEntity {
   uid!: string;
   @Exclude()
   userId!: bigint;
+
+  @Expose()
+  get userUid(): string {
+    return this.user?.uid ?? '';
+  }
+
+  @Exclude()
+  user?: { uid: string };
   readonly createdAt!: Date;
   updatedAt!: Date;
 
   constructor(partial: Partial<CartEntity>) {
     Object.assign(this, partial);
-  }
-
-  update(data: UpdateCartProps): void {
-    if (data.userId !== undefined) this.userId = data.userId;
-    this.updatedAt = new Date();
   }
 }

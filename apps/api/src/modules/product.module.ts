@@ -1,28 +1,32 @@
 import { Module } from '@nestjs/common';
 
+import { FileStorageModule } from '@libs/shared';
 import {
   CreateProductUseCase,
   GetProductUseCase,
   ListProductsUseCase,
   UpdateProductUseCase,
 } from '../application/use-cases/product';
+import { GetProductBySlugUseCase } from '../application/use-cases/product/get-product-by-slug.use-case';
+import { ProductController } from '../controllers/products.controller';
 import { PRODUCT_REPOSITORY } from '../domain/repositories/product.repository.interface';
 import { PrismaProductRepository } from '../infrastructure/repositories/prisma-product.repository';
-import { ProductsController } from '../controllers/product.controller';
 
 const USE_CASES = [
   CreateProductUseCase,
   GetProductUseCase,
   ListProductsUseCase,
   UpdateProductUseCase,
+  GetProductBySlugUseCase,
 ];
 
 @Module({
+  imports: [FileStorageModule],
   providers: [
     { provide: PRODUCT_REPOSITORY, useClass: PrismaProductRepository },
     ...USE_CASES,
   ],
-  controllers: [ProductsController],
-  exports: [...USE_CASES],
+  controllers: [ProductController],
+  exports: [PRODUCT_REPOSITORY, ...USE_CASES],
 })
 export class ProductModule {}

@@ -1,14 +1,14 @@
-import { CartEntity, UpdateCartProps } from '../entities/cart.entity';
+import { PagingDto, PagingResponseDto } from '@libs/shared';
+import { CartEntity } from '../entities/cart.entity';
 
 export interface CreateCartProps {
-  userId: number;
+  uid: string;
 }
 
 export interface ICartRepository {
   findByUid(uid: string): Promise<CartEntity | null>;
-  findAll(): Promise<CartEntity[]>;
+  findAll(pagingDto: PagingDto): Promise<PagingResponseDto<CartEntity>>;
   create(cart: CreateCartProps): Promise<CartEntity>;
-  update(uid: string, cart: UpdateCartProps): Promise<CartEntity>;
   delete(uid: string): Promise<void>;
 }
 

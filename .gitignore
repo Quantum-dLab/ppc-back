@@ -58,3 +58,5 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 # Prisma generated client
 libs/shared/src/infrastructure/prisma/generated/
 .mimocode/*
+uploads/*
+libs/database/prisma/migrations/

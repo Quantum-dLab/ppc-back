@@ -1,6 +1,6 @@
 import { NestApplication, NestFactory } from '@nestjs/core';
-import { Logger, VersioningType } from '@nestjs/common';
-import { json, urlencoded } from 'body-parser';
+import { Logger } from '@nestjs/common';
+
 import rateLimit from 'express-rate-limit';
 import { CustomValidationPipe } from './common/pipes/validation.pipe';
 import { AllExceptionFilter } from './common/filters/exception.filter';
@@ -9,12 +9,12 @@ import { ApiModule } from './modules/api.module';
 import { NestLoggerAdapter } from 'libs/logger/src/nest.logger.adapter';
 async function bootstrap() {
   const app = await NestFactory.create<NestApplication>(ApiModule);
-  app.use(json());
-  app.use(
-    urlencoded({
-      extended: true,
-    }),
-  );
+  // app.use(json());
+  // app.use(
+  //   urlencoded({
+  //     extended: true,
+  //   }),
+  // );
   app.use(
     rateLimit({
       windowMs: 60 * 1000,
@@ -34,7 +34,7 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new AllExceptionFilter());
-  if(process.env.USE_APP_LOGGER_FOR_NEST==='true'){
+  if (process.env.USE_APP_LOGGER_FOR_NEST === 'true') {
     app.useLogger(new NestLoggerAdapter());
   }
   SetupSwagger(app);
