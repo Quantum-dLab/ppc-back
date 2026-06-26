@@ -1,15 +1,15 @@
-import { PagingResponseDto, PagingDto } from '@libs/shared';
+import { PagingDto, PagingResponseDto } from '@libs/shared';
 import {
-  Controller,
-  Post,
-  UseInterceptors,
-  HttpStatus,
   Body,
-  UploadedFile,
+  Controller,
   Get,
+  HttpStatus,
   Param,
   Patch,
+  Post,
   Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiParam } from '@nestjs/swagger';
@@ -24,11 +24,11 @@ import {
 } from '../application/use-cases/product';
 import { GetProductBySlugUseCase } from '../application/use-cases/product/get-product-by-slug.use-case';
 import { ApiDoc } from '../common/decorators';
-import { AdminPanel } from '../common/decorators/swagger.decorator';
+import { UserPanel } from '../common/decorators/swagger.decorator';
 import { ApiCustomResponse } from '../common/types';
 import { ProductEntity } from '../domain/entities/product.entity';
 
-@AdminPanel('products')
+@UserPanel('products')
 @Controller('products-admin')
 export class ProductController {
   constructor(
