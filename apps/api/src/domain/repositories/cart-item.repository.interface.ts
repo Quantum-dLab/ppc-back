@@ -4,8 +4,8 @@ import {
 } from '../entities/cart-item.entity';
 
 export interface CreateCartItemProps {
-  cartId: number;
-  productId: number;
+  cartId: bigint;
+  productId: bigint;
   quantity?: number;
 }
 

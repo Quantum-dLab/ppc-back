@@ -59,4 +59,4 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 libs/shared/src/infrastructure/prisma/generated/
 .mimocode/*
 uploads/*
-libs/database/prisma/migrations/20260625125208_init/migration.sql
+libs/database/prisma/migrations/

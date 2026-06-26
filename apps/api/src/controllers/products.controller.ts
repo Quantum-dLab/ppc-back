@@ -2,36 +2,35 @@ import { PagingResponseDto, PagingDto } from '@libs/shared';
 import {
   Controller,
   Post,
+  UseInterceptors,
   HttpStatus,
   Body,
   UploadedFile,
   Get,
   Param,
-  Query,
   Patch,
-  UseInterceptors,
+  Query,
 } from '@nestjs/common';
-
-import { ApiTags, ApiParam } from '@nestjs/swagger';
-
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiParam } from '@nestjs/swagger';
+import { memoryStorage } from 'multer';
 import { CreateProductDto } from '../application/dto/product/create-product.dto';
+import { UpdateProductDto } from '../application/dto/product/update-product.dto';
 import {
   CreateProductUseCase,
   GetProductUseCase,
   ListProductsUseCase,
   UpdateProductUseCase,
 } from '../application/use-cases/product';
+import { GetProductBySlugUseCase } from '../application/use-cases/product/get-product-by-slug.use-case';
 import { ApiDoc } from '../common/decorators';
+import { AdminPanel } from '../common/decorators/swagger.decorator';
 import { ApiCustomResponse } from '../common/types';
 import { ProductEntity } from '../domain/entities/product.entity';
-import { UpdateProductDto } from '../application/dto/product/update-product.dto';
-import { GetProductBySlugUseCase } from '../application/use-cases/product/get-product-by-slug.use-case';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { memoryStorage } from 'multer';
 
-@ApiTags('products')
-@Controller('products')
-export class ProductsController {
+@AdminPanel('products')
+@Controller('products-admin')
+export class ProductController {
   constructor(
     private readonly createProduct: CreateProductUseCase,
     private readonly getProduct: GetProductUseCase,

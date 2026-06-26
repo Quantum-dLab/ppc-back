@@ -1,3 +1,4 @@
+import { PagingDto, PagingResponseDto } from '@libs/shared';
 import { Inject, Injectable } from '@nestjs/common';
 import { CartEntity } from 'apps/api/src/domain/entities/cart.entity';
 import {
@@ -12,7 +13,7 @@ export class ListCartsUseCase {
     private readonly cartRepository: ICartRepository,
   ) {}
 
-  async execute(): Promise<CartEntity[]> {
-    return this.cartRepository.findAll();
+  async execute(dto: PagingDto): Promise<PagingResponseDto<CartEntity>> {
+    return await this.cartRepository.findAll(dto);
   }
 }

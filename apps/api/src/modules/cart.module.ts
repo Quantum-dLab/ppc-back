@@ -13,14 +13,8 @@ import { UpdateCartItemUseCase } from '../application/use-cases/cart-item/update
 import { CreateCartUseCase } from '../application/use-cases/cart/create-cart.use-case';
 import { GetCartUseCase } from '../application/use-cases/cart/get-cart.use-case';
 import { ListCartsUseCase } from '../application/use-cases/cart/list-cart.use-case';
-import { UpdateCartUseCase } from '../application/use-cases/cart/update-cart.use-case';
 
-const CART_USE_CASES = [
-  CreateCartUseCase,
-  GetCartUseCase,
-  ListCartsUseCase,
-  UpdateCartUseCase,
-];
+const CART_USE_CASES = [CreateCartUseCase, GetCartUseCase, ListCartsUseCase];
 
 const CART_ITEM_USE_CASES = [
   CreateCartItemUseCase,
