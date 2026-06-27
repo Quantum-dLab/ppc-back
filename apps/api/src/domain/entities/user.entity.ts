@@ -7,6 +7,7 @@ export enum UserRole {
 
 export interface UpdateUserProps {
   passwordHash?: string | null;
+  refreshTokenHash?: string | null;
   googleId?: string | null;
   role?: UserRole;
   isActive?: boolean;
@@ -21,6 +22,8 @@ export class UserEntity {
   @Exclude()
   passwordHash!: string | null;
   @Exclude()
+  refreshTokenHash!: string | null;
+  @Exclude()
   googleId!: string | null;
   role!: UserRole;
   isActive!: boolean;
@@ -34,6 +37,9 @@ export class UserEntity {
 
   update(data: UpdateUserProps): void {
     if (data.passwordHash !== undefined) this.passwordHash = data.passwordHash;
+    if (data.refreshTokenHash !== undefined) {
+      this.refreshTokenHash = data.refreshTokenHash;
+    }
     if (data.googleId !== undefined) this.googleId = data.googleId;
     if (data.role !== undefined) this.role = data.role;
     if (data.isActive !== undefined) this.isActive = data.isActive;

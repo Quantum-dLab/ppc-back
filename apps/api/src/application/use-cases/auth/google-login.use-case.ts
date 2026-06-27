@@ -1,12 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
 import { AuthenticationFailedException } from '@libs/shared/exceptions';
+import { hashToken } from '@libs/shared/utils';
+import { Inject, Injectable } from '@nestjs/common';
+import { UserRole } from '../../../domain/entities/user.entity';
 import {
   USER_REPOSITORY,
   type IUserRepository,
 } from '../../../domain/repositories/user.repository.interface';
-import { UserRole } from '../../../domain/entities/user.entity';
-import { TokenService } from '../../../infrastructure/auth/token.service';
 import { GoogleProfile } from '../../../infrastructure/auth/google.strategy';
+import { TokenService } from '../../../infrastructure/auth/token.service';
 import { AuthResult } from './register.use-case';
 
 @Injectable()
@@ -37,12 +38,16 @@ export class GoogleLoginUseCase {
 
     if (!user.isActive) throw AuthenticationFailedException();
 
+    const { accessToken, refreshToken } =
+      this.tokenService.generateTokenPair(user);
     const updated = await this.userRepository.update(user.uid, {
       lastLoginAt: new Date(),
+      refreshTokenHash: hashToken(refreshToken),
     });
 
     return {
-      accessToken: this.tokenService.signAccessToken(updated),
+      accessToken,
+      refreshToken,
       user: updated,
     };
   }

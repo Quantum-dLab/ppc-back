@@ -17,6 +17,8 @@ import {
   LoginUseCase,
   ValidateUserByIdUseCase,
   GoogleLoginUseCase,
+  LogoutUseCase,
+  RefreshTokenUseCase,
 } from '../application/use-cases/auth';
 import {
   ListUsersUseCase,
@@ -29,6 +31,8 @@ const AUTH_USE_CASES = [
   LoginUseCase,
   ValidateUserByIdUseCase,
   GoogleLoginUseCase,
+  LogoutUseCase,
+  RefreshTokenUseCase,
 ];
 
 const USER_USE_CASES = [ListUsersUseCase, GetUserUseCase, UpdateUserUseCase];
