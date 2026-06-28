@@ -10,6 +10,7 @@ model User {
     uid          String    @unique @default(dbgenerated("gen_random_uuid()")) @db.Uuid
     email        String    @unique
     passwordHash String?   @map("password_hash")
+    refreshTokenHash String? @map("refresh_token_hash")
     googleId     String?   @unique @map("google_id")
     role         Role      @default(USER)
     isActive     Boolean   @default(true)

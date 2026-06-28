@@ -1,9 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { comparePassword } from '@libs/shared/utils';
 import {
   AuthenticationFailedException,
   InvalidCredentialsException,
 } from '@libs/shared/exceptions';
+import { comparePassword, hashToken } from '@libs/shared/utils';
+import { Inject, Injectable } from '@nestjs/common';
 import {
   USER_REPOSITORY,
   type IUserRepository,
@@ -28,12 +28,16 @@ export class LoginUseCase {
     if (!isValid) throw InvalidCredentialsException();
     if (!user.isActive) throw AuthenticationFailedException();
 
+    const { accessToken, refreshToken } =
+      this.tokenService.generateTokenPair(user);
     const updated = await this.userRepository.update(user.uid, {
       lastLoginAt: new Date(),
+      refreshTokenHash: hashToken(refreshToken),
     });
 
     return {
-      accessToken: this.tokenService.signAccessToken(updated),
+      accessToken,
+      refreshToken,
       user: updated,
     };
   }

@@ -17,6 +17,7 @@ export class PrismaUserRepository implements IUserRepository {
       uid: raw.uid,
       email: raw.email,
       passwordHash: raw.passwordHash,
+      refreshTokenHash: raw.refreshTokenHash,
       googleId: raw.googleId,
       role: raw.role as UserRole,
       isActive: raw.isActive,
@@ -32,9 +33,14 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
-    const raw = await this.prisma.user.findUnique({ where: { email } });
-    return raw ? this.toEntity(raw) : null;
+
+
+      const raw = await this.prisma.user.findUnique({ where: { email } });
+
+      return raw ? this.toEntity(raw) : null;
+ 
   }
+
 
   async findByGoogleId(googleId: string): Promise<UserEntity | null> {
     const raw = await this.prisma.user.findUnique({ where: { googleId } });
@@ -51,6 +57,7 @@ export class PrismaUserRepository implements IUserRepository {
       data: {
         email: data.email,
         passwordHash: data.passwordHash ?? null,
+        refreshTokenHash: null,
         googleId: data.googleId ?? null,
         role: data.role ?? UserRole.USER,
       },
@@ -64,6 +71,9 @@ export class PrismaUserRepository implements IUserRepository {
       data: {
         ...(data.passwordHash !== undefined && {
           passwordHash: data.passwordHash,
+        }),
+        ...(data.refreshTokenHash !== undefined && {
+          refreshTokenHash: data.refreshTokenHash,
         }),
         ...(data.googleId !== undefined && { googleId: data.googleId }),
         ...(data.role !== undefined && { role: data.role }),
