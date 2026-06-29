@@ -1,9 +1,30 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { Type } from 'class-transformer';
+import { IsInt, IsOptional, Min } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class PagingDto {
-  @ApiProperty({ description: "Requested page number" })
+  @ApiPropertyOptional({
+    description: 'Requested page number',
+    example: 1,
+    default: 1,
+    minimum: 1,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
   public page: number = 1;
-  @ApiProperty({ description: "Items per page" })
+
+  @ApiPropertyOptional({
+    description: 'Items per page',
+    example: 10,
+    default: 10,
+    minimum: 1,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
   public limit: number = 10;
 }
 
@@ -24,12 +45,12 @@ export class PaginationMetaDto {
 export class PagingResponseDto<T> {
   @ApiProperty({
     description:
-      "The rows returned from database per given limit and page number",
+      'The rows returned from database per given limit and page number',
   })
   public rows?: Partial<T>[];
 
   @ApiProperty({
-    description: "The meta data of result-set per given limit and page number",
+    description: 'The meta data of result-set per given limit and page number',
   })
   public meta?: PaginationMetaDto;
 }
