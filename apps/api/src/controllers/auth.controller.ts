@@ -20,15 +20,27 @@ import { LoginDto } from '../application/dto/auth/login.dto';
 import { RefreshTokenDto } from '../application/dto/auth/refresh-token.dto';
 import { Public } from '../common/decorators/public.decorator';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { ApiDoc } from '../common/decorators';
 import { UserPanel } from '../common/decorators/swagger.decorator';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { GoogleAuthGuard } from '../common/guards/google-auth.guard';
 import { UserEntity } from '../domain/entities/user.entity';
 import { GoogleProfile } from '../infrastructure/auth/google.strategy';
-import { ApiCustomResponse } from '../common/types';
+import {
+  AuthTokenResponseDto,
+  MessageResponseDto,
+} from '../application/dto/auth/auth-response.dto';
+import { UserResponseDto } from '../application/dto/user/user-response.dto';
+import {
+  ApiGetMeDocs,
+  ApiGoogleCallbackDocs,
+  ApiGoogleLoginDocs,
+  ApiLoginDocs,
+  ApiLogoutDocs,
+  ApiRefreshTokenDocs,
+  ApiRegisterDocs,
+} from '../common/core-swagger.decorator';
 
-@UserPanel('auth')
+@UserPanel('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -41,97 +53,44 @@ export class AuthController {
 
   @Public()
   @Post('register')
-  @ApiDoc({
-    summary: 'Register a new user',
-    description: 'Creates a new user account with email and password',
-    body: RegisterDto,
-    successStatus: HttpStatus.CREATED,
-    successDescription: 'User registered successfully',
-    successResponse: ApiCustomResponse,
-    errors: [
-      {
-        status: HttpStatus.CONFLICT,
-        description: 'User with this email already exists',
-      },
-      HttpStatus.BAD_REQUEST,
-    ],
-  })
-  async register(@Body() dto: RegisterDto) {
-    const { accessToken, refreshToken, user } =
-      await this.registerUseCase.execute(dto);
-    return { accessToken, refreshToken, user: user.toPublic() };
+  @ApiRegisterDocs()
+  async register(@Body() dto: RegisterDto): Promise<AuthTokenResponseDto> {
+    return AuthTokenResponseDto.fromResult(
+      await this.registerUseCase.execute(dto),
+    );
   }
 
   @Public()
   @Post('login')
-  @ApiDoc({
-    summary: 'User login',
-    description: 'Authenticates a user with email and password',
-    body: LoginDto,
-    successDescription: 'Login successful',
-    successResponse: ApiCustomResponse,
-    errors: [
-      {
-        status: HttpStatus.UNAUTHORIZED,
-        description: 'Invalid email or password',
-      },
-      HttpStatus.BAD_REQUEST,
-    ],
-  })
-  async login(@Body() dto: LoginDto) {
-    console.log('Login DTO:', dto); // Debugging line to log the incoming DTO
-    const { accessToken, refreshToken, user } =
-      await this.loginUseCase.execute(dto);
-    return { accessToken, refreshToken, user: user.toPublic() };
+  @ApiLoginDocs()
+  async login(@Body() dto: LoginDto): Promise<AuthTokenResponseDto> {
+    return AuthTokenResponseDto.fromResult(
+      await this.loginUseCase.execute(dto),
+    );
   }
 
   @Public()
   @Post('refresh')
-  @ApiDoc({
-    summary: 'Refresh access token',
-    description: 'Uses a refresh token to get a new access token and refresh token',
-    body: RefreshTokenDto,
-    successDescription: 'Token refreshed successfully',
-    successResponse: ApiCustomResponse,
-    errors: [
-      {
-        status: HttpStatus.UNAUTHORIZED,
-        description: 'Invalid or expired refresh token',
-      },
-      HttpStatus.BAD_REQUEST,
-    ],
-  })
-  async refresh(@Body() dto: RefreshTokenDto) {
-    const { accessToken, refreshToken, user } =
-      await this.refreshTokenUseCase.execute(dto);
-    return { accessToken, refreshToken, user: user.toPublic() };
+  @ApiRefreshTokenDocs()
+  async refresh(@Body() dto: RefreshTokenDto): Promise<AuthTokenResponseDto> {
+    return AuthTokenResponseDto.fromResult(
+      await this.refreshTokenUseCase.execute(dto),
+    );
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  @ApiDoc({
-    summary: 'Logout user',
-    description:
-      'Revokes the stored refresh token for the authenticated user session',
-    successDescription: 'Logout successful',
-    successResponse: ApiCustomResponse,
-    errors: [HttpStatus.UNAUTHORIZED],
-  })
-  async logout(@CurrentUser() user: UserEntity) {
+  @ApiLogoutDocs()
+  async logout(@CurrentUser() user: UserEntity): Promise<MessageResponseDto> {
     await this.logoutUseCase.execute(user.uid);
-    return { message: 'Logout successful' };
+    return MessageResponseDto.of('Logout successful');
   }
 
   @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google')
-  @ApiDoc({
-    summary: 'Google OAuth login',
-    description: 'Initiates Google OAuth authentication flow',
-    successDescription: 'Redirected to Google consent screen',
-    errors: [HttpStatus.BAD_REQUEST],
-  })
+  @ApiGoogleLoginDocs()
   googleAuth() {
     // Guard redirects to Google's consent screen; handler body is never reached.
   }
@@ -139,29 +98,19 @@ export class AuthController {
   @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google/callback')
-  @ApiDoc({
-    summary: 'Google OAuth callback',
-    description: 'Handles Google OAuth callback and returns tokens',
-    successDescription: 'Google authentication successful',
-    successResponse: ApiCustomResponse,
-    errors: [HttpStatus.BAD_REQUEST, HttpStatus.UNAUTHORIZED],
-  })
-  async googleAuthCallback(@Req() req: { user: GoogleProfile }) {
-    const { accessToken, refreshToken, user } =
-      await this.googleLoginUseCase.execute(req.user);
-    return { accessToken, refreshToken, user: user.toPublic() };
+  @ApiGoogleCallbackDocs()
+  async googleAuthCallback(
+    @Req() req: { user: GoogleProfile },
+  ): Promise<AuthTokenResponseDto> {
+    return AuthTokenResponseDto.fromResult(
+      await this.googleLoginUseCase.execute(req.user),
+    );
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  @ApiDoc({
-    summary: 'Get current user profile',
-    description: "Returns the authenticated user's profile information",
-    successDescription: 'User profile retrieved successfully',
-    successResponse: ApiCustomResponse,
-    errors: [HttpStatus.UNAUTHORIZED],
-  })
-  me(@CurrentUser() user: UserEntity) {
-    return user.toPublic();
+  @ApiGetMeDocs()
+  me(@CurrentUser() user: UserEntity): UserResponseDto {
+    return UserResponseDto.fromEntity(user);
   }
 }

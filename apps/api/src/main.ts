@@ -41,6 +41,7 @@ async function bootstrap() {
   const port = process.env.PORT || 3000;
   await app.listen(port);
   Logger.log(`Application is listening on port ${port}`);
-  Logger.log(`Swagger docs : http://localhost:${port}/docs`);
+  console.log(`Swagger user panel docs : http://localhost:${port}/docs/user`);
+  console.log(`Swagger admin panel docs : http://localhost:${port}/docs/admin`);
 }
 bootstrap();

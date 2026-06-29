@@ -6,8 +6,17 @@ import {
 } from '../application/use-cases/cart-item';
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { CreateCartItemDto } from '../application/dto/cart-item/create-cart-item.dto';
+import { CartItemResponseDto } from '../application/dto/cart-item/cart-item-response.dto';
 import { UpdateCartItemDto } from '../application/dto/cart-item/update-cart-item.dto';
+import { UserPanel } from '../common/decorators/swagger.decorator';
+import {
+  ApiCreateCartItemDocs,
+  ApiGetCartItemDocs,
+  ApiListCartItemsDocs,
+  ApiUpdateCartItemDocs,
+} from '../common/core-swagger.decorator';
 
+@UserPanel('Cart Items')
 @Controller('cart-items')
 export class CartItemsController {
   constructor(
@@ -18,22 +27,34 @@ export class CartItemsController {
   ) {}
 
   @Post()
-  create(@Body() dto: CreateCartItemDto) {
-    return this.createCartItem.execute(dto);
+  @ApiCreateCartItemDocs()
+  async create(@Body() dto: CreateCartItemDto): Promise<CartItemResponseDto> {
+    return CartItemResponseDto.fromEntity(
+      await this.createCartItem.execute(dto),
+    );
   }
 
   @Get()
-  list() {
-    return this.listCartItems.execute();
+  @ApiListCartItemsDocs()
+  async list(): Promise<CartItemResponseDto[]> {
+    const items = await this.listCartItems.execute();
+    return items.map((item) => CartItemResponseDto.fromEntity(item));
   }
 
   @Get(':uid')
-  get(@Param('uid') uid: string) {
-    return this.getCartItem.execute(uid);
+  @ApiGetCartItemDocs()
+  async get(@Param('uid') uid: string): Promise<CartItemResponseDto> {
+    return CartItemResponseDto.fromEntity(await this.getCartItem.execute(uid));
   }
 
   @Patch(':uid')
-  update(@Param('uid') uid: string, @Body() dto: UpdateCartItemDto) {
-    return this.updateCartItem.execute(uid, dto);
+  @ApiUpdateCartItemDocs()
+  async update(
+    @Param('uid') uid: string,
+    @Body() dto: UpdateCartItemDto,
+  ): Promise<CartItemResponseDto> {
+    return CartItemResponseDto.fromEntity(
+      await this.updateCartItem.execute(uid, dto),
+    );
   }
 }

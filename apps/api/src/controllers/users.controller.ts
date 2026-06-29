@@ -9,7 +9,15 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { UserRole } from '../domain/entities/user.entity';
+import { AdminPanel } from '../common/decorators/swagger.decorator';
+import { UserResponseDto } from '../application/dto/user/user-response.dto';
+import {
+  ApiGetUserDocs,
+  ApiListUsersDocs,
+  ApiUpdateUserDocs,
+} from '../common/core-swagger.decorator';
 
+@AdminPanel('Users')
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN)
@@ -21,20 +29,26 @@ export class UsersController {
   ) {}
 
   @Get()
-  async list() {
+  @ApiListUsersDocs()
+  async list(): Promise<UserResponseDto[]> {
     const users = await this.listUsers.execute();
-    return users.map((user) => user.toPublic());
+    return users.map((user) => UserResponseDto.fromEntity(user));
   }
 
   @Get(':uid')
-  async get(@Param('uid') uid: string) {
+  @ApiGetUserDocs()
+  async get(@Param('uid') uid: string): Promise<UserResponseDto> {
     const user = await this.getUser.execute(uid);
-    return user.toPublic();
+    return UserResponseDto.fromEntity(user);
   }
 
   @Patch(':uid')
-  async update(@Param('uid') uid: string, @Body() dto: UpdateUserDto) {
+  @ApiUpdateUserDocs()
+  async update(
+    @Param('uid') uid: string,
+    @Body() dto: UpdateUserDto,
+  ): Promise<UserResponseDto> {
     const user = await this.updateUser.execute(uid, dto);
-    return user.toPublic();
+    return UserResponseDto.fromEntity(user);
   }
 }
