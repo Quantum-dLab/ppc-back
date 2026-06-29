@@ -9,14 +9,11 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiDoc } from '../../../common/decorators';
 import { CurrentUser } from '../../../common/decorators/current-user.decorator';
 import { UserPanel } from '../../../common/decorators/swagger.decorator';
 import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
-import {
-  ApiCreatePaymentDocs,
-  ApiGetPaymentHistoryDocs,
-  ApiVerifyPaymentDocs,
-} from '../../../common/order-payment-swagger.decorator';
 import { UserEntity } from '../../../domain/entities/user.entity';
 import {
   CreatePaymentRequestDto,
@@ -40,7 +37,22 @@ export class UserPaymentsController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @ApiCreatePaymentDocs()
+  @ApiBearerAuth('Authorization')
+  @ApiDoc({
+    summary: 'Create Payment for Order',
+    description:
+      'Creates a pending payment authority for an authenticated user order.',
+    body: CreatePaymentRequestDto,
+    successStatus: HttpStatus.CREATED,
+    successDescription: 'Payment created successfully',
+    successResponse: PaymentResponseDto,
+    errors: [
+      HttpStatus.BAD_REQUEST,
+      HttpStatus.UNAUTHORIZED,
+      HttpStatus.NOT_FOUND,
+      HttpStatus.CONFLICT,
+    ],
+  })
   async create(
     @CurrentUser() user: UserEntity,
     @Body() dto: CreatePaymentRequestDto,
@@ -50,7 +62,15 @@ export class UserPaymentsController {
 
   @Post('verify')
   @HttpCode(HttpStatus.OK)
-  @ApiVerifyPaymentDocs()
+  @ApiDoc({
+    summary: 'Verify Payment',
+    description:
+      'Verifies a payment authority from the user return flow or a trusted system callback.',
+    body: VerifyPaymentRequestDto,
+    successDescription: 'Payment verified successfully',
+    successResponse: PaymentResponseDto,
+    errors: [HttpStatus.BAD_REQUEST, HttpStatus.NOT_FOUND, HttpStatus.CONFLICT],
+  })
   async verify(
     @Body() dto: VerifyPaymentRequestDto,
   ): Promise<PaymentResponseDto> {
@@ -59,7 +79,30 @@ export class UserPaymentsController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @ApiGetPaymentHistoryDocs()
+  @ApiBearerAuth('Authorization')
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    example: 1,
+    description: 'Requested page number',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    example: 10,
+    description: 'Items per page',
+  })
+  @ApiDoc({
+    summary: 'Get Payment History',
+    description:
+      'Returns paginated payment history for the authenticated user.',
+    successDescription: 'Payment history retrieved successfully',
+    successResponse: PaymentResponseDto,
+    isPaginated: true,
+    errors: [HttpStatus.UNAUTHORIZED],
+  })
   async history(
     @CurrentUser() user: UserEntity,
     @Query() query: PagingDto,
