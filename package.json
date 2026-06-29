@@ -5,6 +5,7 @@
   "author": "",
   "private": true,
   "license": "UNLICENSED",
+  "packageManager": "pnpm@11.9.0",
   "scripts": {
     "build": "nest build && tsc-alias -p apps/api/tsconfig.app.json",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
@@ -18,7 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/api/test/jest-e2e.json",
-    "prisma:generate": "npx prisma generate --config ./libs/database/prisma.config.ts",
+    "prisma:generate": "prisma generate --config ./libs/database/prisma.config.ts",
     "prisma:migrate": "prisma migrate dev --config ./libs/database/prisma.config.ts",
     "prisma:deploy": "prisma migrate deploy --config ./libs/database/prisma.config.ts"
   },
@@ -37,6 +38,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.15.1",
     "express-rate-limit": "^8.5.2",
+    "multer": "^2.1.1",
     "nestjs-pino": "^4.6.1",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",

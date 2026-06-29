@@ -6,6 +6,7 @@ export class PaymentEntity {
   id: bigint;
   uid: string;
   orderId: bigint;
+  orderUid?: string;
   amount: number;
   status: PaymentStatus;
   authority?: string | null;
@@ -27,17 +28,30 @@ export class PaymentEntity {
       id: row.id,
       uid: row.uid,
       orderId: row.order_id ?? row.orderId,
+      orderUid: row.order?.uid ?? row.orderUid,
       amount: Number(row.amount),
       status: row.status,
       authority: row.authority ?? null,
       refId: row.ref_id ?? row.refId,
       gatewayResponse: row.gateway_response ?? row.gatewayResponse ?? null,
-      paidAt: row.paid_at ? new Date(row.paid_at) : null,
-      failedAt: row.failed_at ? new Date(row.failed_at) : null,
-      refundedAt: row.refunded_at ? new Date(row.refunded_at) : null,
+      paidAt: row.paid_at
+        ? new Date(row.paid_at)
+        : row.paidAt
+          ? new Date(row.paidAt)
+          : null,
+      failedAt: row.failed_at
+        ? new Date(row.failed_at)
+        : row.failedAt
+          ? new Date(row.failedAt)
+          : null,
+      refundedAt: row.refunded_at
+        ? new Date(row.refunded_at)
+        : row.refundedAt
+          ? new Date(row.refundedAt)
+          : null,
       description: row.description ?? null,
-      createdAt: new Date(row.created_at),
-      updatedAt: new Date(row.updated_at),
+      createdAt: new Date(row.created_at ?? row.createdAt),
+      updatedAt: new Date(row.updated_at ?? row.updatedAt),
     });
   }
 
@@ -64,5 +78,16 @@ export class PaymentEntity {
 export interface CreatePaymentInput {
   orderId: bigint;
   amount: number;
+  status?: PaymentStatus;
+  authority?: string;
   description?: string;
+}
+
+export interface UpdatePaymentInput {
+  status?: PaymentStatus;
+  refId?: string;
+  gatewayResponse?: Record<string, unknown>;
+  paidAt?: Date | null;
+  failedAt?: Date | null;
+  refundedAt?: Date | null;
 }

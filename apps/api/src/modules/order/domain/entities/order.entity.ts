@@ -9,6 +9,8 @@ export class OrderEntity {
   status: OrderStatus;
   totalPrice: number;
   userId: bigint;
+  userUid?: string;
+  userEmail?: string;
   items: OrderItemEntity[] = [];
   createdAt: Date;
   updatedAt: Date;
@@ -24,6 +26,8 @@ export class OrderEntity {
       status: row.status,
       totalPrice: Number(row.total_price ?? row.totalPrice),
       userId: row.user_id ?? row.userId,
+      userUid: row.user?.uid ?? row.userUid,
+      userEmail: row.user?.email ?? row.userEmail,
       items: Array.isArray(row.items)
         ? row.items.map((item: any) => OrderItemEntity.from(item))
         : [],
@@ -45,9 +49,50 @@ export class OrderEntity {
   canBeCancelled(): boolean {
     return this.status === OrderStatus.PENDING && !this.deletedAt;
   }
+
+  static createPending(data: CreatePendingOrderData): OrderEntity {
+    const items = data.items.map(
+      (item) =>
+        new OrderItemEntity({
+          productId: item.productId,
+          productUid: item.productUid,
+          productName: item.productName,
+          quantity: item.quantity,
+          price: item.unitPrice * item.quantity,
+        }),
+    );
+
+    return new OrderEntity({
+      userId: data.userId,
+      status: OrderStatus.PENDING,
+      items,
+      totalPrice: items.reduce((sum, item) => sum + item.price, 0),
+    });
+  }
 }
+
+export interface CreatePendingOrderItemData {
+  productId: bigint;
+  productUid?: string;
+  productName?: string;
+  quantity: number;
+  unitPrice: number;
+}
+
+export interface CreatePendingOrderData {
+  userId: bigint;
+  items: CreatePendingOrderItemData[];
+}
+
+export interface CreateOrderItemInput {
+  productId: bigint;
+  quantity: number;
+  price: number;
+}
+
 export interface CreateOrderInput {
   totalPrice: number;
   userId: bigint;
   status: OrderStatus;
+  items: CreateOrderItemInput[];
 }

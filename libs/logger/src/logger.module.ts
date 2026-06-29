@@ -25,6 +25,7 @@ export class LoggerModule {
             pinoDriver: PinoDriver,
           ) => {
             reg.register(pinoDriver); //register driver
+            // reg.register(w)
             const chosen: string = cfg.get<string>('logger.driver') ?? 'pino';
             await reg.init(chosen);
             const manager = new LoggerManager(reg);
